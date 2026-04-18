@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: teamflow-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: asdw4568
+      POSTGRES_DB: teamflow_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - teamflow_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: teamflow-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:asdw4568@db:5432/teamflow_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+volumes:
+  teamflow_postgres_data:

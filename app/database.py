@@ -1,8 +1,12 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # PostgreSQL 連線
-DATABASE_URL = "postgresql://postgres:asdw4568@localhost:5432/teamflow_db"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:asdw4568@localhost:5432/teamflow_db"
+)
 
 # 建立 engine（資料庫連線核心）
 engine = create_engine(DATABASE_URL)
