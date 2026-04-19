@@ -27,5 +27,17 @@ services:
     volumes:
       - .:/app
 
+  frontend:
+    build: ../frontend
+    container_name: teamflow-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+
 volumes:
   teamflow_postgres_data:
