@@ -8,12 +8,17 @@ from app.models.user import User
 from app.models.task import Task
 from app.models.comment import Comment
 from app.models.comment_like import CommentLike
+from app.models.project import Project
+from app.models.project_member import ProjectMember
+from app.models.project_invitation import ProjectInvitation
 
 # 匯入 routers
 from app.routers.auth import router as auth_router
 from app.routers.tasks import router as tasks_router
 from app.routers.users import router as users_router
 from app.routers.comments import router as comments_router
+from app.routers.projects import router as projects_router
+from app.routers.invitations import router as invitations_router
 
 # 建立資料表
 Base.metadata.create_all(bind=engine)
@@ -37,6 +42,8 @@ app.include_router(auth_router)
 app.include_router(tasks_router)
 app.include_router(users_router)
 app.include_router(comments_router)
+app.include_router(projects_router)
+app.include_router(invitations_router)
 
 @app.get("/")
 def read_root():

@@ -11,18 +11,30 @@ from app.models.user import User
 from app.schemas.comment import CommentCreate, CommentResponse, CommentUpdate
 from app.utils.deps import get_current_user, get_db
 
+# 建立 comments 路由，所有留言相關 API 都會以 /comments 開頭
 router = APIRouter(prefix="/comments", tags=["comments"])
 
+"""
+將 Comment ORM 轉換成前端需要的 response 格式
 
+功能：
+- 補上 user_name
+- 計算 likes 數量
+- 判斷目前使用者是否已按讚
+"""
 def build_comment_response(comment: Comment, db: Session, current_user_id: int):
+    
+    # 查詢留言作者
     user = db.query(User).filter(User.id == comment.user_id).first()
 
+    # 計算按讚數量
     likes_count = (
         db.query(func.count(CommentLike.id))
         .filter(CommentLike.comment_id == comment.id)
         .scalar()
     ) or 0
 
+    # 判斷目前使用者是否按過讚
     is_liked = (
         db.query(CommentLike)
         .filter(
@@ -46,6 +58,15 @@ def build_comment_response(comment: Comment, db: Session, current_user_id: int):
     }
 
 
+"""
+取得指定任務的所有留言
+
+流程：
+1. 檢查 task 是否存在
+2. 查詢該 task 的所有留言
+3. 依時間排序（舊 → 新）
+4. 轉換成 response 格式
+"""
 @router.get("/task/{task_id}", response_model=list[CommentResponse])
 def get_comments_by_task(
     task_id: int,
@@ -72,6 +93,15 @@ def get_comments_by_task(
     ]
 
 
+"""
+新增留言
+
+流程：
+- 檢查 task 是否存在
+- 驗證留言內容不可為空
+- 建立 Comment
+- 回傳完整留言資訊
+"""
 @router.post("/task/{task_id}", response_model=CommentResponse, status_code=status.HTTP_201_CREATED)
 def create_comment(
     task_id: int,
@@ -106,6 +136,14 @@ def create_comment(
     return build_comment_response(new_comment, db, current_user.id)
 
 
+"""
+編輯留言
+
+限制：
+- 只能修改自己的留言
+- 內容不可為空
+- 更新 updated_at
+"""
 @router.put("/{comment_id}", response_model=CommentResponse)
 def update_comment(
     comment_id: int,
@@ -143,6 +181,12 @@ def update_comment(
     return build_comment_response(comment, db, current_user.id)
 
 
+"""
+刪除留言
+
+限制：
+- 只能刪除自己的留言
+"""
 @router.delete("/{comment_id}", status_code=status.HTTP_200_OK)
 def delete_comment(
     comment_id: int,
@@ -169,6 +213,13 @@ def delete_comment(
     return {"message": "Comment deleted successfully"}
 
 
+"""
+切換留言按讚（Like / Unlike）
+
+邏輯：
+- 如果已存在 like → 刪除（取消按讚）
+- 如果不存在 → 新增 like
+"""
 @router.post("/{comment_id}/like", status_code=status.HTTP_200_OK)
 def toggle_like_comment(
     comment_id: int,

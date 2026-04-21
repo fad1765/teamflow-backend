@@ -1,15 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-
+## 建立留言
 class CommentCreate(BaseModel):
     content: str
 
-
+## 更新留言
 class CommentUpdate(BaseModel):
     content: str
 
-
+## 留言回傳格式
 class CommentResponse(BaseModel):
     id: int
     task_id: int
