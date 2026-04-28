@@ -1,0 +1,40 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - master
+      - feature/github-actions
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  backend-check:
+    name: Check Backend
+    runs-on: ubuntu-latest
+
+    env:
+      SECRET_KEY: test_secret_key
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+      DATABASE_URL: sqlite:///./test.db
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall app
+
+      - name: Check FastAPI app import
+        run: python -c "from app.main import app; print('Backend import OK')"
