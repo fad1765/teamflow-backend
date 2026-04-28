@@ -16,6 +16,7 @@ class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
+    color: str
 
     model_config = {
         "from_attributes": True  # 支援 SQLAlchemy model → Pydantic

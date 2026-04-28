@@ -19,7 +19,9 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 ALLOWED_STATUSES = {"todo", "doing", "done"}
 ALLOWED_CATEGORIES = {"SA", "Frontend", "Backend", "Testing", "UIUX"}
 
+#Task → Response
 def build_task_response(task: Task, assignee: User | None):
+
     return {
         "id": task.id,
         "title": task.title,
@@ -37,6 +39,7 @@ def build_task_response(task: Task, assignee: User | None):
         "assignee_color": assignee.color if assignee else None,
     }
 
+#建立任務
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 def create_task(
     task_data: TaskCreate,
@@ -114,6 +117,7 @@ def get_tasks(
 
     return result
 
+#拖拉排序 API
 @router.put("/reorder", status_code=status.HTTP_200_OK)
 def reorder_tasks(
     payload: TaskReorderRequest,
@@ -152,6 +156,7 @@ def reorder_tasks(
 
     return {"message": "Task order updated successfully"}
 
+#更新任務
 @router.put("/{task_id}", response_model=TaskResponse)
 def update_task(
     task_id: int,
@@ -208,6 +213,7 @@ def update_task(
 
     return build_task_response(task, assignee)
 
+#刪除任務
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(
     task_id: int,
