@@ -6,6 +6,7 @@ on:
       - master
       - feature/github-actions
       - feature/docker-ci-cd
+      - feature/docker-push
   pull_request:
     branches:
       - master
@@ -51,3 +52,24 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t teamflow-backend:test .
+
+  docker-push:
+    name: Push Backend Docker Image
+    runs-on: ubuntu-latest
+    needs: docker-build
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/fad1765/teamflow-backend:latest .
+          docker push ghcr.io/fad1765/teamflow-backend:latest
