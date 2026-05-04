@@ -35,6 +35,7 @@ app.add_middleware(
         "http://127.0.0.1:5174",
         "https://teamflow-frontend-4pzd53kxp-fad1765s-projects.vercel.app",
         "https://teamflow-frontend.vercel.app",
+        "https://teamflow-frontend-blond.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
