@@ -3,13 +3,10 @@ name: Backend CI
 on:
   push:
     branches:
-      - master
-      - feature/github-actions
-      - feature/docker-ci-cd
-      - feature/docker-push
+      - "*"        # 所有 branch 都跑 CI
   pull_request:
     branches:
-      - master
+      - master     # PR 到 master 才算正式檢查
 
 jobs:
   backend-check:
@@ -57,6 +54,9 @@ jobs:
     name: Push Backend Docker Image
     runs-on: ubuntu-latest
     needs: docker-build
+
+    # 只在 master 才 push
+    if: github.ref == 'refs/heads/master'
 
     permissions:
       contents: read
