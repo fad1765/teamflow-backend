@@ -10,6 +10,7 @@ class TaskCreate(BaseModel):
     status: str = "todo"
     category: str = "Frontend"
     assignee_id: Optional[int] = None
+    start_date: Optional[datetime] = None
     deadline: Optional[datetime] = None
     estimated_days: Optional[int] = None
 
@@ -21,6 +22,7 @@ class TaskUpdate(BaseModel):
     category: Optional[str] = None
     assignee_id: Optional[int] = None
     position: Optional[int] = None
+    start_date: Optional[datetime] = None
     deadline: Optional[datetime] = None
     estimated_days: Optional[int] = None
     completed_at: Optional[datetime] = None
@@ -36,6 +38,7 @@ class TaskResponse(BaseModel):
     assignee_id: Optional[int] = None
     created_by: int
     created_at: datetime
+    start_date: Optional[datetime] = None
     deadline: Optional[datetime] = None
     estimated_days: Optional[int] = None
     completed_at: Optional[datetime] = None
