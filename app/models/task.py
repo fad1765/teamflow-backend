@@ -55,6 +55,9 @@ class Task(Base):
         onupdate=func.now(),
     )
 
+    # 開始時間（Timeline / Gantt 使用）
+    start_date = Column(DateTime(timezone=True), nullable=True)
+
     # 截止時間
     deadline = Column(DateTime(timezone=True), nullable=True)
 
