@@ -331,7 +331,20 @@ def create_project_invitation(
     db.commit()
     db.refresh(invitation)
 
-    return invitation
+    inviter = db.query(User).filter(User.id == current_user.id).first()
+
+    return {
+        "id": invitation.id,
+        "project_id": invitation.project_id,
+        "project_name": project.name,
+        "email": invitation.email,
+        "invited_by": invitation.invited_by,
+        "inviter_name": inviter.name if inviter else None,
+        "inviter_email": inviter.email if inviter else None,
+        "status": invitation.status,
+        "created_at": invitation.created_at,
+        "responded_at": invitation.responded_at,
+    }
 
 
 """
